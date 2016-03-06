@@ -21,7 +21,7 @@ package virtualcpu3;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-import lombok.Data;
+import lombok.Getter;
 import lombok.extern.log4j.Log4j;
 import org.reflections.Reflections;
 
@@ -31,7 +31,7 @@ import org.reflections.Reflections;
 @Log4j
 public class InstructionFactory {
 
-    private static final Map<String, CodeSetInfo> staticCodeSetData = new HashMap<>();
+    private static final Map<String, CodeSetInfo> STATIC_CODESET_DATA = new HashMap<>();
 
     static {
         Reflections reflections = new Reflections("");
@@ -45,15 +45,16 @@ public class InstructionFactory {
                 String codeSetName = entry.getCodeSet();
 
                 CodeSetInfo codeSet;
+                int existingOpCode;
 
-                if (null == (codeSet = staticCodeSetData.get(codeSetName))) {
-                    staticCodeSetData.put(codeSetName, codeSet = new CodeSetInfo(codeSetName));
+                // If we don't know about this instructions code set yet, create an empty
+                // entry for it.
+                if (null == (codeSet = STATIC_CODESET_DATA.get(codeSetName))) {
+                    STATIC_CODESET_DATA.put(codeSetName, codeSet = new CodeSetInfo(codeSetName));
                 }
 
-                if (codeSet.getMnemonicMap().containsKey(entry.getMnemonic())) {
-                    InstructionInfo existingEntry = codeSet
-                            .getMnemonicMap()
-                            .get(entry.getMnemonic());
+                if (null != codeSet.get(entry.getMnemonic())) {
+                    InstructionInfo existingEntry = codeSet.get(entry.getMnemonic());
 
                     log.error(String.format("@OpCode mnemonic collision "
                             + "codeSet=%s mnemonic=%s class1=%s class2=%s",
@@ -61,20 +62,17 @@ public class InstructionFactory {
                             entry.getMnemonic(),
                             opcodeClass.getName(),
                             existingEntry.getInstructionClass().getName()));
-                } else if (codeSet.getOpcodeMap().containsKey(entry.getOpcode())) {
-                    InstructionInfo existingClass = codeSet
-                            .getOpcodeMap()
-                            .get(entry.getOpcode());
+                } else if (-1 != (existingOpCode = codeSet.hasOpcode(entry.getOpCodes()))) {
+                    InstructionInfo existingClass = codeSet.get(existingOpCode);
 
                     log.error(String.format("@OpCode opcode collision "
                             + "codeSet=%s opcode=%02X class1=%s class2=%s",
                             codeSetName,
-                            entry.getOpcode(),
+                            existingOpCode,
                             opcodeClass.getName(),
                             existingClass.getInstructionClass().getName()));
                 } else {
-                    codeSet.getMnemonicMap().put(entry.getMnemonic(), entry);
-                    codeSet.getOpcodeMap().put(entry.getOpcode(), entry);
+                    codeSet.add(entry);
                 }
             } else {
                 log.error(annotatedClass.getName() + ": @OpCode annotation "
@@ -85,12 +83,12 @@ public class InstructionFactory {
     }
 
     public static String[] getCodeSets() {
-        return staticCodeSetData.keySet().toArray(new String[0]);
+        return STATIC_CODESET_DATA.keySet().toArray(new String[0]);
     }
 
     public static InstructionFactory newInstance(String codeSetName) {
         InstructionFactory factory = null;
-        CodeSetInfo codeSetInfo = staticCodeSetData.get(codeSetName);
+        CodeSetInfo codeSetInfo = STATIC_CODESET_DATA.get(codeSetName);
 
         if (codeSetInfo != null) {
             factory = new InstructionFactory(codeSetInfo);
@@ -106,18 +104,25 @@ public class InstructionFactory {
     }
 
     public InstructionInfo[] getInstructionInfos() {
-        return codeSetInfo.mnemonicMap.values().toArray(new InstructionInfo[0]);
+        return codeSetInfo.getInstructionInfos();
     }
 
     public String getCodeSetName() {
         return codeSetInfo.getName();
     }
 
+    /**
+     * Returns a new instance of an {@link Instruction}.
+     *
+     * @param info
+     * @return A new instance of an {@link Instruction}.
+     */
     public Instruction borrowInstruction(InstructionInfo info) {
         Instruction instruction = null;
 
         try {
             instruction = info.getInstructionClass().newInstance();
+            instruction.setOpCode(info.getOpCodes()[0]);
         } catch (InstantiationException | IllegalAccessException e) {
             throw new InstructionException(e);
         }
@@ -125,26 +130,78 @@ public class InstructionFactory {
         return instruction;
     }
 
+    /**
+     * Returns a new instance of an {@link Instruction}.
+     *
+     * @param mnemonic
+     * @return A new instance of an {@link Instruction}.
+     */
     public Instruction borrowInstruction(String mnemonic) {
-        return borrowInstruction(codeSetInfo.getMnemonicMap().get(mnemonic));
+        return borrowInstruction(codeSetInfo.get(mnemonic));
     }
 
+    /**
+     * Returns a new instance of an {@link Instruction}.
+     *
+     * @param opcode
+     * @return A new instance of an {@link Instruction}.
+     */
     public Instruction borrowInstruction(int opcode) {
-        return borrowInstruction(codeSetInfo.getOpcodeMap().get(opcode));
+        Instruction instruction = borrowInstruction(codeSetInfo.get(opcode));
+
+        instruction.setOpCode(opcode);
+
+        return instruction;
     }
 
-    @Data
     private static class CodeSetInfo {
 
+        @Getter
         private String name;
 
-        private Map<String, InstructionInfo> mnemonicMap = new HashMap<>();
+        private Map<String, InstructionInfo> _mnemonicMap = new HashMap<>();
 
-        private Map<Integer, InstructionInfo> opcodeMap = new HashMap<>();
+        private Map<Integer, InstructionInfo> _opcodeMap = new HashMap<>();
 
         CodeSetInfo(String name) {
             this.name = name;
         }
+
+        /**
+         * Checks the codeset for the presence of one or more opcodes. The first it finds is returned.
+         * If it finds none, then -1 is returned.
+         *
+         * @param opcodes
+         * @return A value of -1 (none present), or the first matching opcode.
+         */
+        int hasOpcode(int... opcodes) {
+            for (int i : opcodes) {
+                if (this._opcodeMap.containsKey(i)) {
+                    return i;
+                }
+            }
+
+            return -1;
+        }
+
+        private void add(InstructionInfo entry) {
+            this._mnemonicMap.put(entry.getMnemonic(), entry);
+
+            for (int opcode : entry.getOpCodes()) {
+                this._opcodeMap.put(opcode, entry);
+            }
+        }
+
+        private InstructionInfo get(String mnemonic) {
+            return this._mnemonicMap.get(mnemonic);
+        }
+
+        private InstructionInfo get(int opcode) {
+            return this._opcodeMap.get(opcode);
+        }
+
+        public InstructionInfo[] getInstructionInfos() {
+            return _mnemonicMap.values().toArray(new InstructionInfo[0]);
+        }
     }
 }
-

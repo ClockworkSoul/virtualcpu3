@@ -18,6 +18,7 @@
  */
 package virtualcpu3;
 
+import java.util.Arrays;
 import lombok.Getter;
 import lombok.ToString;
 
@@ -31,7 +32,7 @@ public final class InstructionInfo {
     private Class<Instruction> instructionClass;
 
     @Getter
-    private int opcode;
+    private int[] opCodes;
 
     @Getter
     private String codeSet;
@@ -45,5 +46,17 @@ public final class InstructionInfo {
         this.instructionClass = instructionClass;
         this.codeSet = annotation.codeSet();
         this.mnemonic = annotation.mnemonic();
+        this.opCodes = annotation.opCodes();
+
+        Arrays.sort(this.opCodes, 0, this.opCodes.length);
+    }
+
+    /**
+     * Does this instruction have a particular opcode?
+     * @param opCode The opcode to test for.
+     * @return True if the instruction has the opcode; false otherwise.
+     */
+    public boolean hasOpCode(int opCode) {
+        return -1 != Arrays.binarySearch(this.opCodes, opCode);
     }
 }

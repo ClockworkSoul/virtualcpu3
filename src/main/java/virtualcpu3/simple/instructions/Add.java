@@ -30,7 +30,7 @@ import virtualcpu3.simple.SimpleRegister;
  */
 @Opcode(mnemonic = "ADD",
         codeSet = "simple",
-        opCode = {0x00, 0x01, 0x02, 0x40, 0x41})
+        opCodes = {0x00, 0x01, 0x02, 0x40, 0x41})
 public class Add extends AbstractInstruction<RegisterCode, SimpleRegister> {
 
     @Override

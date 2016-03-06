@@ -18,14 +18,23 @@
  */
 package virtualcpu3.simple;
 
+import org.junit.Assert;
 import org.junit.Test;
-import static org.junit.Assert.*;
+import virtualcpu3.Instruction;
+import virtualcpu3.InstructionFactory;
 
 /**
  * @author Matthew Titmus <matthew.titmus@gmail.com>
  */
 public class SimpleDecoderTest {
 
-    public SimpleDecoderTest() {
+    @Test
+    public void testDecodeValid() throws Exception {
+        SimpleDecoder decoder = new SimpleDecoder();
+        int opCode = InstructionFactory.newInstance("simple").borrowInstruction("ADD").getOpCode();
+
+        Instruction instruction = decoder.decode(opCode);
+
+        Assert.assertEquals(opCode, instruction.getOpCode());
     }
 }

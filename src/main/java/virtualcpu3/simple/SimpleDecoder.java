@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014 Matthew Titmus <matthew.titmus@gmail.com>.
+ * Copyright (C) 2014 Matthew Titmus (matthew.titmus@gmail.com).
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -22,14 +22,19 @@ import virtualcpu3.AbstractDecoder;
 import virtualcpu3.CPU;
 import virtualcpu3.Instruction;
 import virtualcpu3.InstructionException;
+import virtualcpu3.InstructionFactory;
 import virtualcpu3.Memory;
 import virtualcpu3.Register;
-import virtualcpu3.simple.instructions.Add;
 
 /**
- * @author Matthew Titmus <matthew.titmus@gmail.com>
+ * @author Matthew Titmus (matthew.titmus@gmail.com).
  */
 public class SimpleDecoder extends AbstractDecoder<RegisterCode, SimpleRegister> {
+    private InstructionFactory instructionFactory;
+
+    public SimpleDecoder() {
+        this.instructionFactory = InstructionFactory.newInstance("simple");
+    }
 
     @Override
     public Instruction<RegisterCode, SimpleRegister> decode(CPU<RegisterCode, SimpleRegister> cpu)
@@ -37,26 +42,45 @@ public class SimpleDecoder extends AbstractDecoder<RegisterCode, SimpleRegister>
 
         Memory memory = cpu.getMemory();
         Register<RegisterCode> instructionPointer = cpu.getRegisters().getRegister(RegisterCode.IP);
-        
+
         int opCodeByte = memory.readByte(instructionPointer.getByte());
         instructionPointer.increment();
-        
+
+        // TODO implement this
         int addressingModeByte = memory.readByte(instructionPointer.getByte());
         instructionPointer.increment();
 
+        Instruction<RegisterCode, SimpleRegister> instruction = lookUpInstruction(opCodeByte);
 
-        Instruction<RegisterCode, SimpleRegister> instruction;
+        return instruction;
+    }
 
+    public Instruction<RegisterCode, SimpleRegister> decode(int opCodeByte)
+            throws InstructionException {
 
-        switch (opCodeByte) {
-            case 0x00:
-            case 0x01:
-            case 0x02:
-            case 0x03:
-                instruction = new Add();
-                break;
-            default:
-                throw new InstructionException("No such instruction: " + Integer.toHexString(opCodeByte));
+        return lookUpInstruction(opCodeByte);
+    }
+
+    /**
+     * Given an opcode, looks up and returns an instance of a the appropriate instruction.
+     *
+     * TODO: Pool instruction instances.
+     * @param opCodeByte The opcode.
+     * @return An instance of the appropriate instruction. Not guaranteed to be a new instance!
+     * @throws InstructionException The passed opcode is invalid or otherwise dosn't map to any instruction.
+     */
+    private Instruction lookUpInstruction(int opCodeByte) throws InstructionException {
+
+        if (opCodeByte < 0 || opCodeByte > Byte.MAX_VALUE) {
+            throw new InstructionException("Invalid opcode: " + opCodeByte);
+        }
+
+        Instruction<RegisterCode, SimpleRegister> instruction = instructionFactory.borrowInstruction(opCodeByte);
+
+        // No such instruction? No problem. Return NOOP.
+
+        if (instruction == null) {
+            // TODO: Make a NOOP and return it here.
         }
 
         return instruction;

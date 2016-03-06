@@ -18,20 +18,19 @@
  */
 package virtualcpu3;
 
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import virtualcpu3.simple.RegisterCode;
+import virtualcpu3.simple.SimpleRegister;
 
 /**
- * @author Matthew Titmus <matthew.titmus@gmail.com>
+ * A simple test instruction, meant to be found in/by the InstructionFactoryTest.
+ * 
+ * @author Matt Titmus (matthew.titmus@gmail.com) 
+ * @version $Id$
  */
-@Documented
-@Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.TYPE)
-public @interface Opcode {
-    String codeSet();
-    String mnemonic();
-    int[] opCodes();
+@Opcode(mnemonic = "FOO", codeSet = "test", opCodes = {0xFF})
+public class TestInstruction extends AbstractInstruction<RegisterCode, SimpleRegister> {
+    @Override
+    public void execute() {
+        /* No-op */
+    }
 }
