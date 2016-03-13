@@ -122,7 +122,8 @@ public class InstructionFactory {
 
         try {
             instruction = info.getInstructionClass().newInstance();
-            instruction.setOpCode(info.getOpCodes()[0]);
+
+            setUpInstruction(instruction, info.getOpCodes()[0]);
         } catch (InstantiationException | IllegalAccessException e) {
             throw new InstructionException(e);
         }
@@ -149,7 +150,17 @@ public class InstructionFactory {
     public Instruction borrowInstruction(int opcode) {
         Instruction instruction = borrowInstruction(codeSetInfo.get(opcode));
 
-        instruction.setOpCode(opcode);
+        setUpInstruction(instruction, opcode);
+
+        return instruction;
+    }
+
+    /**
+     * Sets up an instruction that has already been created/borrowed.
+     * Used by {@link #borrowInstruction(int)}.
+     */
+    public Instruction setUpInstruction(Instruction instruction, int opcodeUsed) {
+        instruction.setOpCode(opcodeUsed);
 
         return instruction;
     }

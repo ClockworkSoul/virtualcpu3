@@ -25,6 +25,7 @@ import virtualcpu3.InstructionException;
 import virtualcpu3.InstructionFactory;
 import virtualcpu3.Memory;
 import virtualcpu3.Register;
+import virtualcpu3.simple.instructions.Nop;
 
 /**
  * @author Matthew Titmus (matthew.titmus@gmail.com).
@@ -78,9 +79,11 @@ public class SimpleDecoder extends AbstractDecoder<RegisterCode, SimpleRegister>
         Instruction<RegisterCode, SimpleRegister> instruction = instructionFactory.borrowInstruction(opCodeByte);
 
         // No such instruction? No problem. Return NOOP.
-
         if (instruction == null) {
-            // TODO: Make a NOOP and return it here.
+            instruction = new Nop();
+
+            // Make sure it gets set up like any other instruction.
+            instruction = instructionFactory.setUpInstruction(instruction, opCodeByte);
         }
 
         return instruction;
