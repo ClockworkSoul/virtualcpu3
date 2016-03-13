@@ -40,9 +40,12 @@ public abstract class AbstractInstruction<K, R extends Register<K>> implements I
     protected int opCode;
 
     @Override
-    public void doSetup(CPU<K, R> cpu) {
-        this.cpu = cpu;
+    public void doSetup() {
+        /* Does nothing. Override for default functionality */
     }
+
+    @Override
+    public abstract void execute();
 
     @Override
     public CPU<K, R> getCPU() {
@@ -60,5 +63,7 @@ public abstract class AbstractInstruction<K, R extends Register<K>> implements I
     }
 
     @Override
-    public abstract void execute();
+    public void setCPU(CPU<K, R> cpu) {
+        this.cpu = cpu;
+    }
 }

@@ -25,5 +25,5 @@ package virtualcpu3;
  * @param <C>
  */
 public interface Decoder<K, R extends Register<K>> {
-    public Instruction<K, R> decode(CPU<K, R> cpu) throws InstructionException;
+    public Instruction<K, R> decode(int opCodeByte) throws InstructionException;
 }

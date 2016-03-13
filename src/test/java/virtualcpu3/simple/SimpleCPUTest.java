@@ -18,40 +18,16 @@
  */
 package virtualcpu3.simple;
 
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
 import static org.junit.Assert.*;
+import org.junit.Test;
 import virtualcpu3.CPU;
-import virtualcpu3.Instruction;
 import virtualcpu3.InstructionException;
+import virtualcpu3.Register;
 
 /**
  * @author Matthew A. Titmus <matthew.titmus@gmail.com>
  */
 public class SimpleCPUTest {
-
-    public SimpleCPUTest() {
-    }
-
-    @BeforeClass
-    public static void setUpClass() {
-    }
-
-    @AfterClass
-    public static void tearDownClass() {
-    }
-
-    @Before
-    public void setUp() {
-    }
-
-    @After
-    public void tearDown() {
-    }
-
     @Test
     public void testFetches() {
         SimpleCPU cpu = new SimpleCPU();
@@ -65,11 +41,28 @@ public class SimpleCPUTest {
         }
     }
 
-//    @Test
-    public void testOneSimpleCycle() throws InstructionException {
+    /**
+     * Tests one CPU cycle with a NOP instruction. No exceptions = passed.
+     * @throws InstructionException
+     */
+    @Test
+    public void testOneSimpleCycleWithNoOp() throws InstructionException {
+        final int MEMORY_LOCATION = 123;
+        final int OPCODE = 0xFF;
+
         CPU<RegisterCode, SimpleRegister> cpu = new SimpleCPU();
-        
-        Instruction<RegisterCode, SimpleRegister> instruction = cpu.decode();
-        cpu.execute(instruction);
+
+        // Set the IP to point to byte 123 (chosen arbitrarily)
+        Register instructionPointer = cpu.getRegisters().getRegister(RegisterCode.IP);
+        instructionPointer.setByte(MEMORY_LOCATION);
+
+        assertEquals(MEMORY_LOCATION, instructionPointer.getByte());
+
+        // Write a NO-OP into place
+        cpu.getMemory().writeByte(MEMORY_LOCATION, OPCODE);
+
+        assertEquals(OPCODE, cpu.getMemory().readByte(MEMORY_LOCATION));
+
+        cpu.cycle();
     }
 }

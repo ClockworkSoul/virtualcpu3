@@ -18,14 +18,12 @@
  */
 package virtualcpu3.simple.instructions;
 
-import virtualcpu3.AbstractInstruction;
-import virtualcpu3.simple.RegisterCode;
-import virtualcpu3.simple.SimpleRegister;
+import virtualcpu3.simple.SimpleAbstractInstruction;
 
 /**
  * @author Matthew Titmus <matthew.titmus@gmail.com>
  */
-public class Mov extends AbstractInstruction<RegisterCode, SimpleRegister> {
+public class Mov extends SimpleAbstractInstruction {
 
     @Override
     public void execute() {

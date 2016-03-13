@@ -19,10 +19,8 @@
 
 package virtualcpu3.simple.instructions;
 
-import virtualcpu3.AbstractInstruction;
 import virtualcpu3.Opcode;
-import virtualcpu3.simple.RegisterCode;
-import virtualcpu3.simple.SimpleRegister;
+import virtualcpu3.simple.SimpleAbstractInstruction;
 
 /**
  * A no-operation instruction. Does exactly nothing but consume an instruction.
@@ -35,9 +33,17 @@ import virtualcpu3.simple.SimpleRegister;
 @Opcode(mnemonic = "ADD",
         codeSet = "simple",
         opCodes = {})
-public class Nop extends AbstractInstruction<RegisterCode, SimpleRegister> {
+public class Nop extends SimpleAbstractInstruction {
     @Override
     public void execute() {
+        // Does nothing.
+    }
+
+    /**
+     * Overridden so as not to consume an addressing mode byte.
+     */
+    @Override
+    public void doSetup() {
         // Does nothing.
     }
 }

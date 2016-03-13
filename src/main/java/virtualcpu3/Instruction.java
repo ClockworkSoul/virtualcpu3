@@ -25,10 +25,21 @@ package virtualcpu3;
  */
 public interface Instruction<K, R extends Register<K>> {
 
-    public void doSetup(CPU<K, R> cpu);
+    /**
+     * Called after {@link #setCPU()}. The default implementation does nothing, but can be
+     * overridden for more elaborate setup.
+     */
+    public void doSetup();
 
+    /**
+     * Called to execute the instruction's operation.
+     */
     public void execute();
 
+    /**
+     * Returns the {@link CPU} associated with the Instruction by the {@link InstructionFactory}.
+     * @return The associated {@link CPU}.
+     */
     public CPU<K, R> getCPU();
 
     /**
@@ -43,5 +54,15 @@ public interface Instruction<K, R extends Register<K>> {
 
     public Memory getMemory();
 
+    /**
+     * Associates this Instruction with a CPU just before the {@link #execute()} method is called.
+     */
+    public void setCPU(CPU<K, R> cpu);
+
+    /**
+     * Explicitly sets the op-code used to obtain this Instruction instance from the
+     * {@link InstructionFactory}.
+     * @param opcode
+     */
     public void setOpCode(int opcode);
 }

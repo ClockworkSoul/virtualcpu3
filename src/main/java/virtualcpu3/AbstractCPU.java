@@ -39,11 +39,18 @@ public abstract class AbstractCPU<K, R extends Register<K>> implements CPU<K, R>
     }
 
     @Override
+    public void cycle() {
+        int opcode = fetch();
+        Instruction<K, R> instruction = decode(opcode);
+        execute(instruction);
+    }
+
+    @Override
     public abstract void execute(Instruction instruction);
 
     @Override
-    public Instruction<K, R> decode() throws InstructionException {
-        return getDecoder().decode(this);
+    public Instruction<K, R> decode(int opCode) throws InstructionException {
+        return getDecoder().decode(opCode);
     }
 
     @Override

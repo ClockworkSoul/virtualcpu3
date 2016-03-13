@@ -19,12 +19,8 @@
 package virtualcpu3.simple;
 
 import virtualcpu3.AbstractDecoder;
-import virtualcpu3.CPU;
-import virtualcpu3.Instruction;
 import virtualcpu3.InstructionException;
 import virtualcpu3.InstructionFactory;
-import virtualcpu3.Memory;
-import virtualcpu3.Register;
 import virtualcpu3.simple.instructions.Nop;
 
 /**
@@ -37,29 +33,22 @@ public class SimpleDecoder extends AbstractDecoder<RegisterCode, SimpleRegister>
         this.instructionFactory = InstructionFactory.newInstance("simple");
     }
 
+    /**
+     * Decodes an instruction by converting an opcode into an instruction.
+     * 
+     * @param opCodeByte
+     * @return
+     * @throws InstructionException
+     */
     @Override
-    public Instruction<RegisterCode, SimpleRegister> decode(CPU<RegisterCode, SimpleRegister> cpu)
+    public SimpleInstruction decode(int opCodeByte)
             throws InstructionException {
 
-        Memory memory = cpu.getMemory();
-        Register<RegisterCode> instructionPointer = cpu.getRegisters().getRegister(RegisterCode.IP);
+        SimpleInstruction instruction = lookUpInstruction(opCodeByte);
 
-        int opCodeByte = memory.readByte(instructionPointer.getByte());
-        instructionPointer.increment();
-
-        // TODO implement this
-        int addressingModeByte = memory.readByte(instructionPointer.getByte());
-        instructionPointer.increment();
-
-        Instruction<RegisterCode, SimpleRegister> instruction = lookUpInstruction(opCodeByte);
+        instruction.setOpCode(opCodeByte);
 
         return instruction;
-    }
-
-    public Instruction<RegisterCode, SimpleRegister> decode(int opCodeByte)
-            throws InstructionException {
-
-        return lookUpInstruction(opCodeByte);
     }
 
     /**
@@ -68,22 +57,22 @@ public class SimpleDecoder extends AbstractDecoder<RegisterCode, SimpleRegister>
      * TODO: Pool instruction instances.
      * @param opCodeByte The opcode.
      * @return An instance of the appropriate instruction. Not guaranteed to be a new instance!
-     * @throws InstructionException The passed opcode is invalid or otherwise dosn't map to any instruction.
+     * @throws InstructionException The passed opcode is invalid or otherwise doesn't map to any instruction.
      */
-    private Instruction lookUpInstruction(int opCodeByte) throws InstructionException {
+    private SimpleInstruction lookUpInstruction(int opCodeByte) throws InstructionException {
 
-        if (opCodeByte < 0 || opCodeByte > Byte.MAX_VALUE) {
+        if (opCodeByte < 0x00 || opCodeByte > 0xFF) {
             throw new InstructionException("Invalid opcode: " + opCodeByte);
         }
 
-        Instruction<RegisterCode, SimpleRegister> instruction = instructionFactory.borrowInstruction(opCodeByte);
+        SimpleInstruction instruction = (SimpleInstruction) instructionFactory.borrowInstruction(opCodeByte);
 
         // No such instruction? No problem. Return NOOP.
         if (instruction == null) {
             instruction = new Nop();
 
             // Make sure it gets set up like any other instruction.
-            instruction = instructionFactory.setUpInstruction(instruction, opCodeByte);
+            instruction = (SimpleInstruction) instructionFactory.setUpInstruction(instruction, opCodeByte);
         }
 
         return instruction;

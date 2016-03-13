@@ -27,5 +27,5 @@ package virtualcpu3;
 public abstract class AbstractDecoder<K, R extends Register<K>> implements Decoder<K, R> {
 
     @Override
-    public abstract Instruction<K, R> decode(CPU<K, R> cpu) throws InstructionException;
+    public abstract Instruction<K, R> decode(int opCodeByte) throws InstructionException;
 }

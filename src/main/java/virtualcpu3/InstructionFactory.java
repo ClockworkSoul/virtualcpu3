@@ -115,15 +115,17 @@ public class InstructionFactory {
      * Returns a new instance of an {@link Instruction}.
      *
      * @param info
-     * @return A new instance of an {@link Instruction}.
+     * @return A new instance of an {@link Instruction}, or null if the instruction has no associated class.
      */
     public Instruction borrowInstruction(InstructionInfo info) {
         Instruction instruction = null;
 
         try {
-            instruction = info.getInstructionClass().newInstance();
+            if (info != null) {
+                instruction = info.getInstructionClass().newInstance();
 
-            setUpInstruction(instruction, info.getOpCodes()[0]);
+                setUpInstruction(instruction, info.getOpCodes()[0]);
+            }
         } catch (InstantiationException | IllegalAccessException e) {
             throw new InstructionException(e);
         }
@@ -135,7 +137,7 @@ public class InstructionFactory {
      * Returns a new instance of an {@link Instruction}.
      *
      * @param mnemonic
-     * @return A new instance of an {@link Instruction}.
+     * @return A new instance of an {@link Instruction}, or null if the mnemonic has no associated class.
      */
     public Instruction borrowInstruction(String mnemonic) {
         return borrowInstruction(codeSetInfo.get(mnemonic));
@@ -145,12 +147,14 @@ public class InstructionFactory {
      * Returns a new instance of an {@link Instruction}.
      *
      * @param opcode
-     * @return A new instance of an {@link Instruction}.
+     * @return A new instance of an {@link Instruction}, or null if the opcode has no associated class.
      */
     public Instruction borrowInstruction(int opcode) {
         Instruction instruction = borrowInstruction(codeSetInfo.get(opcode));
 
-        setUpInstruction(instruction, opcode);
+        if (instruction != null) {
+            setUpInstruction(instruction, opcode);
+        }
 
         return instruction;
     }

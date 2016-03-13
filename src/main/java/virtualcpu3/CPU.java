@@ -24,23 +24,26 @@ package virtualcpu3;
  * @param <R> The {@link Register} implementation.
  */
 public interface CPU <K, R extends Register<K>> {
+    /**
+     * Execute one round of fetch, decode, and execute.
+     */
+    public void cycle();
 
     /**
-     * Default instruction fetch. Retrieves the opcode and advances the program
-     * counter.
+     * Default instruction fetch. Retrieves the opcode and advances the program counter.
      *
-     * @return Returns a long value containing the next opcode.
+     * @return Returns an int value containing the next opcode.
      */
     public int fetch();
 
     /**
      * Fetches the instruction associated with the most recent opcode.
      *
-     * @return Returns a long value containing the next opcode.
+     * @return An {@link Instruction} instance.
      * @throws InstructionException if the opcode is not associated with
      * an instruction or is otherwise illegal.
      */
-    public Instruction<K, R> decode() throws InstructionException;
+    public Instruction<K, R> decode(int opCode) throws InstructionException;
     
     public void execute(Instruction instruction);
 
