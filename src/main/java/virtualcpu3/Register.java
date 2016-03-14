@@ -70,39 +70,35 @@ public interface Register<K> {
 
     /**
      * Resets the values of the specified bit to false.
-     * @param bitIndex
+     * @param byteIndex
      */
-    public void clear(int bitIndex);
+    public void clear(int byteIndex);
 
-    public void set(int bitIndex);
+    public void set(int byteIndex);
 
     public int getByte();
 
-    public int getByte(int firstBitIndex);
+    public int getByte(int firstByteIndex);
 
     public void setByte(int value);
 
-    public void setByte(int firstBitIndex, int value);
-
-//    public int[] getBytes();
-//
-//    public int[] getBytes(int firstBitIndex, int byteCount);
+    public void setByte(int firstByteIndex, int value);
 
     public int getWord();
 
-    public int getWord(int firstBitIndex);
+    public int getWord(int firstByteIndex);
 
     public void setWord(int value);
 
-    public void setWord(int firstBitIndex, int value);
+    public void setWord(int firstByteIndex, int value);
 
     public int getDWord();
 
-    public int getDWord(int firstBitIndex);
+    public int getDWord(int firstByteIndex);
 
     public void setDWord(int value);
 
-    public void setDWord(int firstBitIndex, int value);
+    public void setDWord(int firstByteIndex, int value);
 
     /**
      * Returns the number of bits in this register.

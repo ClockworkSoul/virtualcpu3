@@ -19,6 +19,8 @@
 package virtualcpu3.simple.instructions;
 
 import virtualcpu3.Opcode;
+import virtualcpu3.Register;
+import virtualcpu3.simple.RegisterCode;
 import virtualcpu3.simple.SimpleAbstractInstruction;
 
 /**
@@ -26,12 +28,42 @@ import virtualcpu3.simple.SimpleAbstractInstruction;
  *
  * @author Matthew Titmus <matthew.titmus@gmail.com>
  */
-@Opcode(mnemonic = "ADD",
-        codeSet = "simple",
-        opCodes = {0x00, 0x01, 0x02, 0x40, 0x41})
+@Opcode(mnemonic="ADD",
+        codeSet="simple",
+        opCodes={0x00, 0x01, 0x02, 0x40, 0x41})
 public class Add extends SimpleAbstractInstruction {
+
     @Override
     public void execute() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        int value1 = getValue(getSourceRegister());
+        int value2 = getValue(getDestinationRegister());
+
+        setValue(getDestinationRegister(), value1 + value2);
+    }
+
+    private int getValue(Register<RegisterCode> register) {
+        switch (register.getSize()) {
+            case 1:
+                return register.getByte();
+            case 2:
+            case 3:
+                return register.getWord();
+            case 4:
+                return register.getDWord();
+        }
+
+        return 0;
+    }
+
+    private void setValue(Register<RegisterCode> register, int value) {
+        switch (register.getSize()) {
+            case 1:
+                register.setByte(value);
+            case 2:
+            case 3:
+                register.setWord(value);
+            case 4:
+                register.setDWord(value);
+        }
     }
 }

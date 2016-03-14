@@ -67,8 +67,6 @@ public abstract class AbstractMemory implements Memory {
                 value = ~value & 0x000000FF;
             } else if (value <= Short.MAX_VALUE) {
                 value = ~value & 0x0000FFFF;
-//            } else if (value <= Integer.MAX_VALUE) {
-//                value = ~value & 0xFFFFFFFFL;
             } else {
                 value = ~value;
             }

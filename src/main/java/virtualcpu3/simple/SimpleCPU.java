@@ -42,7 +42,7 @@ public class SimpleCPU extends AbstractCPU<RegisterCode, SimpleRegister> {
         registers = new Registers<>();
 
         for (RegisterCode code : RegisterCode.values()) {
-            SimpleRegister register = new SimpleRegister(16, code);
+            SimpleRegister register = new SimpleRegister(2, code);
             registers.addRegister(register);
         }
     }
@@ -75,7 +75,7 @@ public class SimpleCPU extends AbstractCPU<RegisterCode, SimpleRegister> {
         Register<RegisterCode> instructionPointer = this.getRegisters().getRegister(RegisterCode.IP);
 
         // Get the byte value it contains
-        int opCodeIndex = instructionPointer.getByte();
+        int opCodeIndex = instructionPointer.getWord();
 
         // Get the value from the memory location pointed to by the IP.
         int opCodeByte = this.getMemory().readByte(opCodeIndex);

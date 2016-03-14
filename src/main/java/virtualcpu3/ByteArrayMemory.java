@@ -53,11 +53,9 @@ public class ByteArrayMemory extends AbstractMemory implements Memory {
     public byte[] readBytes(int position, int readLength) {
         int indexFrom = calculateIndex(position);
 
-        calculateIndex(position + readLength - 1);
-
         byte[] bytesCopy = new byte[readLength];
 
-        System.arraycopy(bytesCopy, 0, bytes, indexFrom, readLength);
+        System.arraycopy(bytes, indexFrom, bytesCopy, 0, readLength);
 
         return bytesCopy;
     }
@@ -105,6 +103,5 @@ public class ByteArrayMemory extends AbstractMemory implements Memory {
                 | (unsignedCast(this.bytes[index + 2]) << 16)
                 | (unsignedCast(this.bytes[index + 1]) << 8)
                 | (unsignedCast(this.bytes[index + 0])));
-
     }
 }

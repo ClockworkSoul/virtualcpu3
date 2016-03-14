@@ -22,12 +22,14 @@ import static org.junit.Assert.*;
 import org.junit.Test;
 import virtualcpu3.CPU;
 import virtualcpu3.InstructionException;
+import virtualcpu3.InstructionFactory;
 import virtualcpu3.Register;
 
 /**
  * @author Matthew A. Titmus <matthew.titmus@gmail.com>
  */
 public class SimpleCPUTest {
+
     @Test
     public void testFetches() {
         SimpleCPU cpu = new SimpleCPU();
@@ -43,6 +45,7 @@ public class SimpleCPUTest {
 
     /**
      * Tests one CPU cycle with a NOP instruction. No exceptions = passed.
+     *
      * @throws InstructionException
      */
     @Test
@@ -64,5 +67,63 @@ public class SimpleCPUTest {
         assertEquals(OPCODE, cpu.getMemory().readByte(MEMORY_LOCATION));
 
         cpu.cycle();
+    }
+
+    /**
+     * Tests one CPU cycle with an ADD instruction.
+     *
+     * @throws InstructionException
+     */
+    @Test
+    public void testOneSimpleCycleWithAdd() throws InstructionException {
+        final int OPCODE = InstructionFactory.newInstance("simple").borrowInstruction("ADD").getOpCode();
+        final int INST_ADDRESS = 0x0012;
+        final int VALUE_ADDRESS = 0x0123;
+        final int VALUE1 = 42, VALUE2 = 64;
+
+        CPU<RegisterCode, SimpleRegister> cpu = new SimpleCPU();
+
+        // FIRST: Set up the initial values
+        //
+        // Set the value of register AX to VALUE1
+        Register ax = cpu.getRegisters().getRegister(RegisterCode.AX);
+        ax.clear();
+        ax.setWord(VALUE1);
+        assertEquals(VALUE1, ax.getWord());
+
+        // Set the value of memory position VALUE_ADDRESS to VALUE2
+        cpu.getMemory().writeWord(VALUE_ADDRESS, VALUE2);
+        assertEquals(VALUE2, cpu.getMemory().readWord(VALUE_ADDRESS));
+
+        // SECOND: Initialize the IP and instruction at memory position INST_ADDRESS
+        //
+        // Set the IP to point to byte INST_ADDRESS
+        Register instructionPointer = cpu.getRegisters().getRegister(RegisterCode.IP);
+        instructionPointer.setWord(INST_ADDRESS);
+        assertEquals(INST_ADDRESS, instructionPointer.getWord());
+
+        // Write an ADD and its operands into place.
+        cpu.getMemory().writeByte(INST_ADDRESS + 0, OPCODE); // Byte 1 = Opcode (ADD)
+        cpu.getMemory().writeByte(INST_ADDRESS + 1, // Byte 2 = Add mode (AX, Direct memory)
+                AddressingMode.getAddressingModeByte(
+                        AddressingMode.REGISTER,
+                        AddressingMode.MEMORY_DIRECT
+                )
+        );
+        cpu.getMemory().writeWord(INST_ADDRESS + 2, RegisterCode.AX.getBitEncoding()); // Byte 3-4 = Register AX
+        cpu.getMemory().writeWord(INST_ADDRESS + 4, VALUE_ADDRESS); // Byte 5-6= Direct memory location
+
+        byte[] bytes = cpu.getMemory().readBytes(INST_ADDRESS, 6);
+        assertEquals(OPCODE, (int) bytes[0]);
+        assertEquals(RegisterCode.AX.getBitEncoding(), bytes[2]);
+        assertEquals(0, bytes[3]);
+        assertEquals(0x23, bytes[4]);
+        assertEquals(0x01, bytes[5]);
+
+        cpu.cycle();
+
+        // Finally, the added value should be placed in memory at location
+        int sum =  cpu.getMemory().readWord(VALUE_ADDRESS);
+        assertEquals(VALUE1 + VALUE2, sum);
     }
 }

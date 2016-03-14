@@ -124,7 +124,9 @@ public class InstructionFactory {
             if (info != null) {
                 instruction = info.getInstructionClass().newInstance();
 
-                setUpInstruction(instruction, info.getOpCodes()[0]);
+                if (info.getOpCodes().length > 0) {
+                    setUpInstruction(instruction, info.getOpCodes()[0]);
+                }
             }
         } catch (InstantiationException | IllegalAccessException e) {
             throw new InstructionException(e);

@@ -18,7 +18,6 @@
  */
 package virtualcpu3;
 
-import java.util.BitSet;
 import lombok.Getter;
 
 /**

@@ -35,7 +35,7 @@ public class Registers<K, R extends Register<K>> {
         registersLookup = new HashMap<>();
     }
 
-    public Registers addRegister(R register) {
+    public Registers<K, R> addRegister(R register) {
         this.registersLookup.put(register.getName(), register);
         return this;
     }
@@ -48,7 +48,7 @@ public class Registers<K, R extends Register<K>> {
         return registersLookup.values();
     }
 
-    public Register getRegister(K name) {
+    public R getRegister(K name) {
         return registersLookup.get(name);
     }
 }

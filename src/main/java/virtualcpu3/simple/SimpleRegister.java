@@ -26,6 +26,10 @@ import virtualcpu3.ByteArrayRegister;
  */
 public class SimpleRegister extends ByteArrayRegister<RegisterCode> {
 
+    /**
+     * @param size The size of the register, in bytes
+     * @param name The name of the register
+     */
     public SimpleRegister(int size, RegisterCode name) {
         super(size, name);
     }
