@@ -30,7 +30,7 @@ import virtualcpu3.simple.SimpleAbstractInstruction;
  * 
  * @author Matthew Titmus (matthew.titmus@gmail.com)
  */
-@Opcode(mnemonic = "ADD",
+@Opcode(mnemonic = "NOP",
         codeSet = "simple",
         opCodes = {})
 public class Nop extends SimpleAbstractInstruction {

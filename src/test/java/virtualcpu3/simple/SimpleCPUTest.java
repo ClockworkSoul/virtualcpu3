@@ -115,6 +115,10 @@ public class SimpleCPUTest {
 
         byte[] bytes = cpu.getMemory().readBytes(INST_ADDRESS, 6);
         assertEquals(OPCODE, (int) bytes[0]);
+        assertEquals(AddressingMode.getAddressingModeByte(
+                        AddressingMode.REGISTER,
+                        AddressingMode.MEMORY_DIRECT
+                ), bytes[1]);
         assertEquals(RegisterCode.AX.getBitEncoding(), bytes[2]);
         assertEquals(0, bytes[3]);
         assertEquals(0x23, bytes[4]);
