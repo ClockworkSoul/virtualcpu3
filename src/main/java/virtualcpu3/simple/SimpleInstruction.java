@@ -21,7 +21,6 @@ package virtualcpu3.simple;
 import virtualcpu3.Instruction;
 
 /**
- *
  * @author Matthew Titmus (matthew.titmus@gmail.com)
  */
 public interface SimpleInstruction extends Instruction<RegisterCode, SimpleRegister> {

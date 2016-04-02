@@ -32,8 +32,6 @@ public abstract class AbstractInstruction<K, R extends Register<K>> implements I
     /**
      * The operation code that was used to acquire this instruction. It should be set by the
      * {@link InstructionFactory}.
-     *
-     * @return
      */
     @Getter
     @Setter
@@ -41,7 +39,7 @@ public abstract class AbstractInstruction<K, R extends Register<K>> implements I
 
     @Override
     public void doSetup() {
-        /* Does nothing. Override for default functionality */
+        /* Does nothing. Override for functionality */
     }
 
     @Override

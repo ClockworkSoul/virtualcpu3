@@ -92,6 +92,9 @@ public abstract class SimpleAbstractInstruction
                 break;
 
             case MEMORY_DIRECT:
+                register = new SimpleRegister(cpu.getMemory(), addressValue, null);
+                break;
+
             case MEMORY_INDIRECT:
                 throw new UnsupportedOperationException();
 

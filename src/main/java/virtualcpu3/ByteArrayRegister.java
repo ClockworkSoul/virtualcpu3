@@ -28,11 +28,14 @@ public class ByteArrayRegister<K> extends AbstractRegister<K> {
 
     private Memory memory; // Wrap the words array
 
+    private int offset;
+
     /**
      * @param size The size of the register in bytes.
      */
     public ByteArrayRegister(int size) {
         this(size, null);
+        this.offset = 0;
     }
 
     /**
@@ -42,14 +45,23 @@ public class ByteArrayRegister<K> extends AbstractRegister<K> {
     public ByteArrayRegister(int size, K name) {
         super(name);
         this.memory = new ByteArrayMemory(size);
+        this.offset = 0;
     }
 
     public ByteArrayRegister(byte[] wrappedArray, K name) {
         this(wrappedArray, 0, wrappedArray.length, name);
+        this.offset = 0;
     }
 
     public ByteArrayRegister(BitSet bitSet, K name) {
         this(bitSet.toByteArray(), name);
+        this.offset = 0;
+    }
+
+    public ByteArrayRegister(Memory memory, int offset, K name) {
+        super(name);
+        this.memory = memory;
+        this.offset = offset;
     }
 
     /**
@@ -70,11 +82,12 @@ public class ByteArrayRegister<K> extends AbstractRegister<K> {
         }
 
         this.memory = new ByteArrayMemory(wrappedArray, offset, length);
+        this.offset = 0;
     }
 
     @Override
     public int getByte(int firstByteIndex) {
-        return memory.readByte(firstByteIndex);
+        return memory.readByte(this.offset + firstByteIndex);
     }
 
     /**
@@ -83,7 +96,7 @@ public class ByteArrayRegister<K> extends AbstractRegister<K> {
      */
     @Override
     public void setByte(int firstByteIndex, int value) {
-        memory.writeByte(firstByteIndex, value);
+        memory.writeByte(this.offset + firstByteIndex, value);
     }
 
     /**
@@ -92,7 +105,7 @@ public class ByteArrayRegister<K> extends AbstractRegister<K> {
      */
     @Override
     public int getWord(int firstByteIndex) {
-        return memory.readWord(firstByteIndex);
+        return memory.readWord(this.offset + firstByteIndex);
     }
 
     /**
@@ -101,7 +114,7 @@ public class ByteArrayRegister<K> extends AbstractRegister<K> {
      */
     @Override
     public void setWord(int firstByteIndex, int value) {
-        memory.writeWord(firstByteIndex, value);
+        memory.writeWord(this.offset + firstByteIndex, value);
     }
 
     /**
@@ -110,7 +123,7 @@ public class ByteArrayRegister<K> extends AbstractRegister<K> {
      */
     @Override
     public int getDWord(int firstByteIndex) {
-        return memory.readDWord(firstByteIndex);
+        return memory.readDWord(this.offset + firstByteIndex);
     }
 
     /**
@@ -119,7 +132,7 @@ public class ByteArrayRegister<K> extends AbstractRegister<K> {
      */
     @Override
     public void setDWord(int firstByteIndex, int value) {
-        memory.writeDWord(firstByteIndex, value);
+        memory.writeDWord(this.offset + firstByteIndex, value);
     }
 
     /**
@@ -129,6 +142,6 @@ public class ByteArrayRegister<K> extends AbstractRegister<K> {
      */
     @Override
     public int getSize() {
-        return memory.getLength();
+        return memory.getLength() - this.offset;
     }
 }

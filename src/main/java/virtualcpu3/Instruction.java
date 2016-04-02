@@ -29,7 +29,9 @@ public interface Instruction<K, R extends Register<K>> {
      * Called after {@link #setCPU()}. The default implementation does nothing, but can be
      * overridden for more elaborate setup.
      */
-    public void doSetup();
+    public default void doSetup() {
+        // Do nothing
+    }
 
     /**
      * Called to execute the instruction's operation.

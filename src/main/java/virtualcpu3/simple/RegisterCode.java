@@ -38,7 +38,7 @@ public enum RegisterCode {
     private static Map<Integer, RegisterCode> CODE_LOOKUP;
 
     @Getter
-    private int bitEncoding;
+    private final int bitEncoding;
 
     RegisterCode(int bitEncoding) {
         this.bitEncoding = bitEncoding;

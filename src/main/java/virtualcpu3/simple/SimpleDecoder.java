@@ -27,7 +27,7 @@ import virtualcpu3.simple.instructions.Nop;
  * @author Matthew Titmus (matthew.titmus@gmail.com).
  */
 public class SimpleDecoder extends AbstractDecoder<RegisterCode, SimpleRegister> {
-    private InstructionFactory instructionFactory;
+    private final InstructionFactory instructionFactory;
 
     public SimpleDecoder() {
         this.instructionFactory = InstructionFactory.newInstance("simple");

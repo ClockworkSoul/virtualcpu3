@@ -20,6 +20,7 @@ package virtualcpu3.simple;
 
 import java.util.BitSet;
 import virtualcpu3.ByteArrayRegister;
+import virtualcpu3.Memory;
 
 /**
  * @author Matthew Titmus <matthew.titmus@gmail.com>
@@ -44,5 +45,9 @@ public class SimpleRegister extends ByteArrayRegister<RegisterCode> {
 
     public SimpleRegister(byte[] wrappedArray, int offset, int length, RegisterCode name) {
         super(wrappedArray, offset, length, name);
+    }
+    
+    public SimpleRegister(Memory memory, int offset, RegisterCode name) {
+        super(memory, offset, name);
     }
 }
