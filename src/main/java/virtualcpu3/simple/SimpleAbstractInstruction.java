@@ -75,7 +75,7 @@ public abstract class SimpleAbstractInstruction
         switch (addressingMode[index]) {
             case REGISTER:
                 // Ignore all but the lower byte.
-                addressValue |= 0x0F;
+                addressValue &= 0x00FF;
                 RegisterCode registerCode = RegisterCode.translateMode(addressValue);
 
                 if (registerCode != null) {

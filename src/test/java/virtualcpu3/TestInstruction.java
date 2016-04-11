@@ -25,7 +25,6 @@ import virtualcpu3.simple.SimpleRegister;
  * A simple test instruction, meant to be found in/by the InstructionFactoryTest.
  * 
  * @author Matt Titmus (matthew.titmus@gmail.com) 
- * @version $Id$
  */
 @Opcode(mnemonic = "FOO", codeSet = "test", opCodes = {0xFF})
 public class TestInstruction extends AbstractInstruction<RegisterCode, SimpleRegister> {

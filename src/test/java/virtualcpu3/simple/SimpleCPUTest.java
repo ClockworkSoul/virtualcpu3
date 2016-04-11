@@ -91,7 +91,8 @@ public class SimpleCPUTest {
         ax.setWord(VALUE1);
         assertEquals(VALUE1, ax.getWord());
 
-        // Set the value of memory position VALUE_ADDRESS to VALUE2
+        // Place VALUE2 into working memory at the address the ADD will look (as specified in
+        // bytes 5-6 of the instruction.
         cpu.getMemory().writeWord(VALUE_ADDRESS, VALUE2);
         assertEquals(VALUE2, cpu.getMemory().readWord(VALUE_ADDRESS));
 
@@ -114,11 +115,11 @@ public class SimpleCPUTest {
         cpu.getMemory().writeWord(INST_ADDRESS + 4, VALUE_ADDRESS); // Byte 5-6= Direct memory location
 
         byte[] bytes = cpu.getMemory().readBytes(INST_ADDRESS, 6);
-        assertEquals(OPCODE, (int) bytes[0]);
-        assertEquals(AddressingMode.getAddressingModeByte(
-                        AddressingMode.REGISTER,
-                        AddressingMode.MEMORY_DIRECT
-                ), bytes[1]);
+        assertEquals(OPCODE, (int) bytes[0]); // 1: Expect the opcode for the ADD instruction
+        assertEquals(AddressingMode.getAddressingModeByte( // 2: Expect REGISTER+DIRECT MEMORY
+                AddressingMode.REGISTER,
+                AddressingMode.MEMORY_DIRECT
+        ), bytes[1]);
         assertEquals(RegisterCode.AX.getBitEncoding(), bytes[2]);
         assertEquals(0, bytes[3]);
         assertEquals(0x23, bytes[4]);
@@ -127,7 +128,7 @@ public class SimpleCPUTest {
         cpu.cycle();
 
         // Finally, the added value should be placed in memory at location
-        int sum =  cpu.getMemory().readWord(VALUE_ADDRESS);
+        int sum = cpu.getMemory().readWord(VALUE_ADDRESS);
         assertEquals(VALUE1 + VALUE2, sum);
     }
 }

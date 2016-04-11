@@ -42,28 +42,32 @@ public class Add extends SimpleAbstractInstruction {
     }
 
     private int getValue(Register<RegisterCode> register) {
+        int value = 0;
+
         switch (register.getSize()) {
             case 1:
-                return register.getByte();
+                value = register.getByte(); break;
             case 2:
             case 3:
-                return register.getWord();
+            default:
+                value = register.getWord(); break;
             case 4:
-                return register.getDWord();
+                value = register.getDWord(); break;
         }
 
-        return 0;
+        return value;
     }
 
     private void setValue(Register<RegisterCode> register, int value) {
         switch (register.getSize()) {
             case 1:
-                register.setByte(value);
+                register.setByte(value); break;
             case 2:
             case 3:
-                register.setWord(value);
+            default:
+                register.setWord(value); break;
             case 4:
-                register.setDWord(value);
+                register.setDWord(value); break;
         }
     }
 }

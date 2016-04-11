@@ -37,7 +37,7 @@ public class InstructionFactory {
         Reflections reflections = new Reflections("");
         Set<Class<?>> annotated = reflections.getTypesAnnotatedWith(Opcode.class);
 
-        for (Class<?> annotatedClass : annotated) {
+        annotated.stream().forEach(annotatedClass -> {
             if (Instruction.class.isAssignableFrom(annotatedClass)) {
                 Class<Instruction> opcodeClass = (Class<Instruction>) annotatedClass;
 
@@ -79,7 +79,7 @@ public class InstructionFactory {
                         + "may only be applied to implementations of "
                         + Instruction.class.getName());
             }
-        }
+        });
     }
 
     public static String[] getCodeSets() {
