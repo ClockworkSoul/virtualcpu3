@@ -31,9 +31,9 @@ public abstract class SimpleAbstractInstruction
 
     private static final SimpleRegister NULL_REGISTER = new SimpleRegister(2, null);
 
-    public static final int REGISTER_SOURCE = 0;
+    public static final int REGISTER_SOURCE = 1;
 
-    public static final int REGISTER_DESTINATION = 1;
+    public static final int REGISTER_DESTINATION = 0;
 
     @Getter
     private int addressingModeByte = 0xFF;

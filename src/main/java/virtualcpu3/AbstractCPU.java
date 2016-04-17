@@ -26,7 +26,6 @@ import lombok.Getter;
  * @param <R> The {@link Register} implementation.
  */
 public abstract class AbstractCPU<K, R extends Register<K>> implements CPU<K, R> {
-
     @Getter
     protected Registers<K, R> registers;
 
@@ -37,22 +36,4 @@ public abstract class AbstractCPU<K, R extends Register<K>> implements CPU<K, R>
     public AbstractCPU(Registers<? extends K, ? extends R> registers) {
         registers = new Registers<>();
     }
-
-    @Override
-    public void cycle() {
-        int opcode = fetch();
-        Instruction<K, R> instruction = decode(opcode);
-        execute(instruction);
-    }
-
-    @Override
-    public abstract void execute(Instruction instruction);
-
-    @Override
-    public Instruction<K, R> decode(int opCode) throws InstructionException {
-        return getDecoder().decode(opCode);
-    }
-
-    @Override
-    public abstract int fetch();
 }

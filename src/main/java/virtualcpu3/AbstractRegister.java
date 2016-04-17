@@ -352,7 +352,7 @@ public abstract class AbstractRegister<K> implements Register<K> {
 
             if (value == 0) { // If the last byte overflowed, advance this one.
                 setByte(i - 1, 0);
-                setByte(i, AbstractMemory.unsignedCast(getByte(i)) + 1);
+                setByte(i, Memory.unsignedCast(getByte(i)) + 1);
             } else {
                 break;
             }

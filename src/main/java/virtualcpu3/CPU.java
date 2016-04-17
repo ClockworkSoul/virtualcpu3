@@ -27,7 +27,11 @@ public interface CPU <K, R extends Register<K>> {
     /**
      * Execute one round of fetch, decode, and execute.
      */
-    public void cycle();
+    public default void cycle() {
+        int opcode = fetch();
+        Instruction<K, R> instruction = decode(opcode);
+        execute(instruction);
+    }
 
     /**
      * Default instruction fetch. Retrieves the opcode and advances the program counter.
@@ -43,7 +47,9 @@ public interface CPU <K, R extends Register<K>> {
      * @throws InstructionException if the opcode is not associated with
      * an instruction or is otherwise illegal.
      */
-    public Instruction<K, R> decode(int opCode) throws InstructionException;
+    public default Instruction<K, R> decode(int opCode) throws InstructionException {
+        return getDecoder().decode(opCode);
+    }
     
     public void execute(Instruction instruction);
 

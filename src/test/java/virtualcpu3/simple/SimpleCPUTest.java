@@ -107,8 +107,8 @@ public class SimpleCPUTest {
         cpu.getMemory().writeByte(INST_ADDRESS + 0, OPCODE); // Byte 1 = Opcode (ADD)
         cpu.getMemory().writeByte(INST_ADDRESS + 1, // Byte 2 = Add mode (AX, Direct memory)
                 AddressingMode.getAddressingModeByte(
-                        AddressingMode.REGISTER,
-                        AddressingMode.MEMORY_DIRECT
+                        AddressingMode.REGISTER, // Destination
+                        AddressingMode.MEMORY_DIRECT // Source
                 )
         );
         cpu.getMemory().writeWord(INST_ADDRESS + 2, RegisterCode.AX.getBitEncoding()); // Byte 3-4 = Register AX
@@ -127,8 +127,10 @@ public class SimpleCPUTest {
 
         cpu.cycle();
 
-        // Finally, the added value should be placed in memory at location
-        int sum = cpu.getMemory().readWord(VALUE_ADDRESS);
-        assertEquals(VALUE1 + VALUE2, sum);
+        // The value in memory should be the same
+        assertEquals(VALUE2, cpu.getMemory().readWord(VALUE_ADDRESS));
+
+        // Finally, the added value should be placed in memory in AX
+        assertEquals(VALUE1 + VALUE2, cpu.getRegisters().getRegister(RegisterCode.AX).getWord());
     }
 }

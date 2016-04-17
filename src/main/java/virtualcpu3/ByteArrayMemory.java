@@ -46,7 +46,7 @@ public class ByteArrayMemory extends AbstractMemory implements Memory {
 
     @Override
     public int readByte(int position) {
-        return unsignedCast(bytes[calculateIndex(position)]);
+        return Memory.unsignedCast(bytes[calculateIndex(position)]);
     }
 
     @Override
@@ -71,8 +71,8 @@ public class ByteArrayMemory extends AbstractMemory implements Memory {
     public int readWord(int position) {
         int index = calculateIndex(position);
 
-        return (unsignedCast(this.bytes[index + 1]) << 8)
-                | unsignedCast(this.bytes[index + 0]);
+        return (Memory.unsignedCast(this.bytes[index + 1]) << 8)
+                | Memory.unsignedCast(this.bytes[index + 0]);
     }
 
     @Override
@@ -99,9 +99,9 @@ public class ByteArrayMemory extends AbstractMemory implements Memory {
     public int readDWord(int position) {
         int index = calculateIndex(position);
 
-        return ((unsignedCast(this.bytes[index + 3]) << 24)
-                | (unsignedCast(this.bytes[index + 2]) << 16)
-                | (unsignedCast(this.bytes[index + 1]) << 8)
-                | (unsignedCast(this.bytes[index + 0])));
+        return ((Memory.unsignedCast(this.bytes[index + 3]) << 24)
+                | (Memory.unsignedCast(this.bytes[index + 2]) << 16)
+                | (Memory.unsignedCast(this.bytes[index + 1]) << 8)
+                | (Memory.unsignedCast(this.bytes[index + 0])));
     }
 }

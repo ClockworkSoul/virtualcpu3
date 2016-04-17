@@ -52,9 +52,13 @@ public interface Instruction<K, R extends Register<K>> {
      */
     public int getOpCode();
 
-    public Registers<K, R> getRegisters();
+    public default Memory getMemory() {
+        return getCPU().getMemory();
+    }
 
-    public Memory getMemory();
+    public default Registers<K, R> getRegisters() {
+        return getCPU().getRegisters();
+    }
 
     /**
      * Associates this Instruction with a CPU just before the {@link #execute()} method is called.

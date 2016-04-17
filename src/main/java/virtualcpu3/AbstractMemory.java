@@ -42,36 +42,4 @@ public abstract class AbstractMemory implements Memory {
 
         return index;
     }
-
-    /**
-     * <p>
-     * This method will zero-extend a negative or positive byte or short value
-     * into an unsigned integer. Integer values fall through unchanged.
-     * </p>
-     * <p>
-     * In other words, it allows us to preserve bit values when up-casting
-     * without having to worry about sign changes. For example, when a byte 0xFF
-     * (decimal -1) is up-cast to a short, it would usually be sign-extended to
-     * 0xFFFF (also -1). This method allows the same value to be converted to
-     * 0x00FF (decimal 255).
-     * </p>
-     *
-     * @param value
-     * @return
-     */
-    public static int unsignedCast(int value) {
-        if (value < 0) {
-            value = ~value;
-
-            if (value <= Byte.MAX_VALUE) {
-                value = ~value & 0x000000FF;
-            } else if (value <= Short.MAX_VALUE) {
-                value = ~value & 0x0000FFFF;
-            } else {
-                value = ~value;
-            }
-        }
-
-        return value;
-    }
 }

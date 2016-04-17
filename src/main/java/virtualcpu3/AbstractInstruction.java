@@ -38,26 +38,8 @@ public abstract class AbstractInstruction<K, R extends Register<K>> implements I
     protected int opCode;
 
     @Override
-    public void doSetup() {
-        /* Does nothing. Override for functionality */
-    }
-
-    @Override
-    public abstract void execute();
-
-    @Override
     public CPU<K, R> getCPU() {
         return cpu;
-    }
-
-    @Override
-    public Memory getMemory() {
-        return getCPU().getMemory();
-    }
-
-    @Override
-    public Registers<K, R> getRegisters() {
-        return getCPU().getRegisters();
     }
 
     @Override
