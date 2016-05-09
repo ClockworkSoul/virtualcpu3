@@ -33,6 +33,8 @@ public class InstructionFactory {
 
     private static final Map<String, CodeSetInfo> STATIC_CODESET_DATA = new HashMap<>();
 
+    private CodeSetInfo codeSetInfo;
+
     static {
         Reflections reflections = new Reflections("");
         Set<Class<?>> annotated = reflections.getTypesAnnotatedWith(Opcode.class);
@@ -96,8 +98,6 @@ public class InstructionFactory {
 
         return factory;
     }
-
-    private CodeSetInfo codeSetInfo;
 
     private InstructionFactory(CodeSetInfo codeSetInfo) {
         this.codeSetInfo = codeSetInfo;

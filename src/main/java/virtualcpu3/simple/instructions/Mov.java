@@ -30,6 +30,8 @@ import virtualcpu3.simple.SimpleAbstractInstruction;
  * the size of the source value is the size of the destination, and doesn't complain about potential
  * size mismatches.  Reads from memory are assumed to be words.
  *
+ * Also, if you try to move a value into a literal, nothing happens. Not even an error.
+ *
  * @author Matthew Titmus <matthew.titmus@gmail.com>
  */
 @Opcode(mnemonic="MOV",
